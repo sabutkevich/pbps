@@ -1,5 +1,6 @@
+#include <syslog.h>
+#include <time.h>
 #include "httpd.h"
-
 #include <arpa/inet.h>
 #include <ctype.h>
 #include <netdb.h>
@@ -14,6 +15,7 @@
 #define MAX_CONNECTIONS 1000
 #define BUF_SIZE 65535
 #define QUEUE_SIZE 1000000
+#define LOG_LENGTH 1024
 
 static int listenfd;
 int *clients;
@@ -21,6 +23,7 @@ static void start_server(const char *);
 static void respond(int);
 
 static char *buf;
+struct sockaddr_in clientaddr;
 
 // Client request
 char *method, // "GET" or "POST"
@@ -175,7 +178,7 @@ void respond(int slot) {
 
     uri_unescape(uri);
 
-    fprintf(stderr, "\x1b[32m + [%s] %s\x1b[0m\n", method, uri);
+    fprintf(stderr, "\x1b[32m + [%s] %s\x1b[0m\n", method, uri);    
 
     qs = strchr(uri, '?');
 
@@ -217,6 +220,25 @@ void respond(int slot) {
 
     // call router
     route();
+    
+    //create log
+    char *log = malloc(LOG_LENGTH);
+    
+    //date and time for log
+    char time_buff[20];
+    struct tm *s_time;
+    time_t now = time(0);
+    s_time = gmtime(&now);
+    strftime(time_buff, sizeof(time_buff), "%Y-%m-%d %H:%M:%S", s_time);
+    
+    //ip for log
+    char *client_ip = inet_ntoa(clientaddr.sin_addr);
+    
+    //full log
+    sprintf(log, "%s -- [%s] %s %s %s", time_buff, client_ip, method, uri, prot);
+    
+    //output log in info level
+    syslog(LOG_INFO, log);
 
     // tidy up
     fflush(stdout);
