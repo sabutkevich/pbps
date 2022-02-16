@@ -234,7 +234,7 @@ void respond(int slot) {
     char *client_ip = inet_ntoa(clientaddr.sin_addr);
     
     //full log
-    sprintf(log, "%s -- [%s] %s %s %s", time_buff, client_ip, method, uri, prot);
+    sprintf(log, "%s - - [%s] \"%s %s %s\"", client_ip, time_buff, method, uri, prot);
     
     //output log in info level
     syslog(LOG_INFO, log);
