@@ -3,7 +3,7 @@ Description=PICOFoxweb
 After=network.target 
 
 [Service]
-ExecStart=/usr/local/sbin/PICOFoxweb 8080 -r /var/www/picofoxweb/webroot
+ExecStart=/usr/local/sbin/PICOFoxweb 8080 /var/www/picofoxweb/webroot
 KillMode=process
 User=picofoxweb
 Group=picofoxweb
