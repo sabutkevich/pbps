@@ -35,7 +35,6 @@ char *method, // "GET" or "POST"
 int payload_size;
 
 void serve_forever(const char *PORT) {
-  struct sockaddr_in clientaddr;
   socklen_t addrlen;
 
   int slot = 0;
