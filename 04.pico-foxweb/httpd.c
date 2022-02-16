@@ -216,12 +216,9 @@ void respond(int slot) {
     int clientfd = clients[slot];
     dup2(clientfd, STDOUT_FILENO);
     close(clientfd);
-
-    // call router
-    route();
     
     //create log
-    char *log = malloc(LOG_LENGTH);
+    log = malloc(LOG_LENGTH);
     
     //date and time for log
     char time_buff[20];
@@ -235,6 +232,9 @@ void respond(int slot) {
     
     //full log
     sprintf(log, "%s - - [%s] \"%s %s %s\"", client_ip, time_buff, method, uri, prot);
+    
+    // call router
+    route();
     
     //output log in info level
     syslog(LOG_INFO, log);
